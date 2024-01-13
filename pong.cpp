@@ -72,7 +72,9 @@ void Pong::Application::update_players() {
         std::cout << "Left's current Y: " << m_left.get_y() << std::endl;
     #endif
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-        if (m_left.get_y() == 20) m_collision_effect.play();
+        if (m_left.get_y() == 20) {
+            m_collision_effect.play();
+        }
         if (m_left.get_y() > 20.0f) 
         {
            m_left.set_y(-5.0f);
@@ -86,7 +88,9 @@ void Pong::Application::update_players() {
         if (m_left.get_y() < (HEIGHT - 175.0f))
         {
            m_left.set_y(5.0f);
+           #ifdef DEBUG
            std::cout << m_left.get_y() << std::endl;
+           #endif
         }
     }
     #ifdef DEBUG 
@@ -107,7 +111,9 @@ void Pong::Application::update_players() {
         if (m_right.get_opponent_y() < (HEIGHT - 175.0f))
         {
            m_right.set_opponent_y(5.0f);
+           #ifdef DEBUG
            std::cout << m_right.get_opponent_y() << std::endl;
+           #endif
         }
     }
 }
