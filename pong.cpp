@@ -8,7 +8,7 @@
 
 Pong::Application::Application() : m_pong(sf::VideoMode(WIDTH, HEIGHT), "Pong"), m_court_divider(sf::Vector2f(10.f, 10.f)), m_freezeDuration(sf::seconds(6.0f)) {
     //Load game font
-    if (!m_font.loadFromFile("font.ttf")) {
+    if (!m_font.loadFromFile("./assets/font.ttf")) {
         std::cerr << "Failed to load font!" << std::endl;
         exit (-1);
     } 
@@ -35,7 +35,7 @@ Pong::Application::Application() : m_pong(sf::VideoMode(WIDTH, HEIGHT), "Pong"),
     m_opponent_score.setPosition(((WIDTH / 2.0f) + 95 ), (HEIGHT / 4.75f) - 75);
 
     //Load/Initialize Collision sound effect
-    if (!m_buffer.loadFromFile("hit.wav")) {
+    if (!m_buffer.loadFromFile("./assets/hit.wav")) {
         std::cerr << "Failed to load sound effect!" << std::endl;
         exit (-1);
     } 
@@ -43,7 +43,7 @@ Pong::Application::Application() : m_pong(sf::VideoMode(WIDTH, HEIGHT), "Pong"),
     m_collision_effect.setVolume(15);
 
     //Load/Initialize intro music
-    if(!m_start_up.openFromFile("start_up.wav")) {
+    if(!m_start_up.openFromFile("./assets/start_up.wav")) {
         std::cerr << "Failed to load start_up music!" << std::endl;
         exit (-1);
     }
