@@ -147,16 +147,21 @@ void Pong::Application::draw_players_score() {
 }
 
 void Pong::Application::update_ball() {
-    m_tennis_ball.set_x(1.0f, 0);
+    
+    if (!m_tennis_ball.get_status()) m_tennis_ball.set_x(1.0f, 0);
+    if (m_tennis_ball.get_status()) m_tennis_ball.set_x(1.0f, 1);
+
+    [[unlikely]]
     if (m_tennis_ball.get_ball_bounding_box().intersects(m_left.get_player_box())) {
-        m_tennis_ball.set_x(1.0f, 1);
         if (m_collision_effect.getStatus() != sf::Music::Playing)
             m_collision_effect.play();
+        m_tennis_ball.set_status(false);
     }
+
     else if (m_tennis_ball.get_ball_bounding_box().intersects(m_right.get_opponent_box())) {
-        m_tennis_ball.set_x(1.0f, 0);
         if (m_collision_effect.getStatus() != sf::Music::Playing)
             m_collision_effect.play();
+        m_tennis_ball.set_status(true);
     }
 }
 

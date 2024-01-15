@@ -26,13 +26,11 @@ bool Ball::get_status() const {
 void Ball::set_x(float pos, int32_t direction) {
     //1 = Left Player | Other = Right Player
     [[unlikely]]
-    if (direction && m_direction) {
+    if (!m_direction) {
         m_x += pos;
-        m_direction = false;
     }
-    else if (!direction && m_direction){
+    else {
         m_x -= pos;
-        m_direction = true;
     }
 
     m_ball.setPosition(m_x, m_y);
@@ -41,6 +39,10 @@ void Ball::set_x(float pos, int32_t direction) {
 void Ball::set_y(float pos, int32_t direction) {
     m_y += pos;
     m_ball.setPosition(m_x, m_y);
+}
+
+void Ball::set_status(bool stat) {
+    m_direction = stat; 
 }
 
 [[nodiscard]]
