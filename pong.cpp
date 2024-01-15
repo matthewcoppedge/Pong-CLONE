@@ -91,10 +91,10 @@ void Pong::Application::update_players() {
         std::cout << "Left's current Y: " << m_left.get_y() << std::endl;
     #endif
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-        if (m_left.get_y() == 20) {
+        if (m_left.get_y() == 72.5f) {
             m_collision_effect.play();
         }
-        if (m_left.get_y() > 20.0f) 
+        if (m_left.get_y() > 72.5f) 
         {
            m_left.set_y(-5.0f);
            #ifdef DEBUG
@@ -103,8 +103,8 @@ void Pong::Application::update_players() {
         }
     }    
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-        if (m_left.get_y() == (HEIGHT - 175.0f)) m_collision_effect.play();
-        if (m_left.get_y() < (HEIGHT - 175.0f))
+        if (m_left.get_y() == (HEIGHT - 72.5f)) m_collision_effect.play();
+        if (m_left.get_y() < (HEIGHT - 72.5f))
         {
            m_left.set_y(5.0f);
            #ifdef DEBUG
@@ -116,8 +116,8 @@ void Pong::Application::update_players() {
         std::cout << "Right's current Y: " << m_right.get_opponent_y() << std::endl;
     #endif
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::O)) {
-        if (m_right.get_opponent_y() == 20) m_collision_effect.play();
-        if (m_right.get_opponent_y() > 20.0f) 
+        if (m_right.get_opponent_y() == 72.5f) m_collision_effect.play();
+        if (m_right.get_opponent_y() > 72.5f) 
         {
            m_right.set_opponent_y(-5.0f);
            #ifdef DEBUG
@@ -126,8 +126,8 @@ void Pong::Application::update_players() {
         }
     }    
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) {
-        if (m_right.get_opponent_y() == (HEIGHT - 175.0f)) m_collision_effect.play();
-        if (m_right.get_opponent_y() < (HEIGHT - 175.0f))
+        if (m_right.get_opponent_y() == (HEIGHT - 72.5f)) m_collision_effect.play();
+        if (m_right.get_opponent_y() < (HEIGHT - 72.5f))
         {
            m_right.set_opponent_y(5.0f);
            #ifdef DEBUG
@@ -143,14 +143,14 @@ void Pong::Application::draw_players() {
 }
 
 void Pong::Application::draw_players_score() {
-    if ((m_tennis_ball.get_x() <= -150)) {
+    if ((m_tennis_ball.get_x() < -150)) {
         m_SCORE_RIGHT++;
         std::stringstream ss;
         ss << std::setw(2) << std::setfill('0') << m_SCORE_RIGHT;
         std::string stringValue = ss.str();
         m_opponent_score.setString(stringValue);
     }
-    if ( (m_tennis_ball.get_x() >  WIDTH + 150)) {
+    if ((m_tennis_ball.get_x() >  WIDTH + 150)) {
         m_SCORE_LEFT++;
         std::stringstream ss;
         ss << std::setw(2) << std::setfill('0') << m_SCORE_LEFT;
@@ -181,13 +181,13 @@ void Pong::Application::update_ball() {
         }
     }
 
-    else if (m_tennis_ball.get_ball_bounding_box().intersects(m_right.get_opponent_box())) {
+    if (m_tennis_ball.get_ball_bounding_box().intersects(m_right.get_opponent_box())) {
         std::cout << m_tennis_ball.get_y() << std::endl;
-        std::cout << m_right.get_y() << std::endl;
+        std::cout << m_right.get_opponent_y() << std::endl;
         if (m_collision_effect.getStatus() != sf::Music::Playing)
             m_collision_effect.play();
         m_tennis_ball.set_status(true);
-        if (m_tennis_ball.get_y() < m_right.get_y()) {
+        if (m_tennis_ball.get_y() < m_right.get_opponent_y()) {
             m_tennis_ball.set_y(false);
             std::cout << "Here right 1st" << std::endl;
         }

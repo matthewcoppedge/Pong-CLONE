@@ -1,6 +1,6 @@
 CXX = g++ -std=c++17
 
-CFLAGS = -O3 -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-system
+CFLAGS = -O3 -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-system -w
 
 pong: main.o pong.o player.o ball.o
 	$(CXX) -o pong main.o pong.o player.o ball.o $(CFLAGS)

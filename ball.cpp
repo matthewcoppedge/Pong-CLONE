@@ -38,14 +38,14 @@ void Ball::set_x(float pos, int32_t direction) {
     
     if (m_x < -150) {
         m_x = WIDTH / 2.0f;
-        m_y = 100.0f;
-        m_ball.setPosition( (WIDTH / 2.0f), 100.0f);
+        m_y = 45.0f;
+        m_ball.setPosition( (WIDTH / 2.0f) + 50.0f, 45.0f);
         if (m_boundry.getStatus() != sf::Music::Playing) m_boundry.play();
     }
     if (m_x > WIDTH + 150) {
         m_x = WIDTH / 2.0f;
-        m_y = 100.0f;
-        m_ball.setPosition( (WIDTH / 1.2f), (HEIGHT - 100));
+        m_y = HEIGHT - 100.0f;
+        m_ball.setPosition( (WIDTH / 2.0f), (HEIGHT - 100));
         if (m_boundry.getStatus() != sf::Music::Playing) m_boundry.play();
     }
 
