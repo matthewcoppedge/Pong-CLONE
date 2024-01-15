@@ -60,3 +60,11 @@ sf::RectangleShape& Player::get_player() {
 sf::RectangleShape& Player::get_opponent() {
     return m_opponent;
 }
+
+sf::FloatRect Player::get_player_box() {
+    return m_player.getGlobalBounds();
+}
+
+sf::FloatRect Player::get_opponent_box() {
+    return m_opponent.getGlobalBounds();
+}

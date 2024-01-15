@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "pong.h"
 
 #define WIDTH  1100
@@ -6,12 +7,22 @@
 
 //#define DEBUG
 
-Pong::Application::Application() : m_pong(sf::VideoMode(WIDTH, HEIGHT), "Pong"), m_court_divider(sf::Vector2f(10.f, 10.f)), m_freezeDuration(sf::seconds(6.0f)) {
+
+Pong::Application::Application() : m_pong(sf::VideoMode(WIDTH, HEIGHT), "Pong"), m_court_divider(sf::Vector2f(10.f, 10.f)), m_freezeDuration(sf::seconds(6.0f)), m_start_time(0.0f) {
     //Load game font
     if (!m_font.loadFromFile("./assets/font.ttf")) {
         std::cerr << "Failed to load font!" << std::endl;
         exit (-1);
     } 
+
+    //Load/Initialize Shader 
+    if (!m_shader.loadFromFile("distortion.frag", sf::Shader::Fragment)) {
+        std::cerr << "Failed to load fragment shader!" << std::endl;
+        std::cout << m_shader.getNativeHandle() << std::endl;
+//        exit (-1);
+    }
+    m_shader.setUniform("iResolution", sf::Vector3f(WIDTH, HEIGHT, 1.0f));
+    m_shader.setUniform("iFrameRate", 120);
     
     //Initalize Title Settings
     m_title.setFont(m_font);
@@ -48,6 +59,13 @@ Pong::Application::Application() : m_pong(sf::VideoMode(WIDTH, HEIGHT), "Pong"),
         exit (-1);
     }
     m_start_up.setVolume(50);
+    
+    //Load/Initialize background music
+    if(!m_background.openFromFile("./assets/background.wav")) {
+        std::cerr << "Failed to load background music!" << std::endl;
+        exit (-1);
+    }
+    m_background.setVolume(8);
 
     //Used to set delay for main theme / title screen
     m_freezeTimer = m_freezeDuration;
@@ -123,12 +141,55 @@ void Pong::Application::draw_players() {
     m_pong.draw(m_right.get_opponent());
 }
 
-void Pong::Application::draw_player_score() {
+void Pong::Application::draw_players_score() {
     m_pong.draw(m_player_score);
+    m_pong.draw(m_opponent_score);
 }
 
-void Pong::Application::draw_opponent_score() {
-    m_pong.draw(m_opponent_score);
+void Pong::Application::update_ball() {
+    m_tennis_ball.set_x(1.0f, 0);
+    if (m_tennis_ball.get_ball_bounding_box().intersects(m_left.get_player_box())) {
+        m_tennis_ball.set_x(1.0f, 1);
+        if (m_collision_effect.getStatus() != sf::Music::Playing)
+            m_collision_effect.play();
+    }
+    else if (m_tennis_ball.get_ball_bounding_box().intersects(m_right.get_opponent_box())) {
+        m_tennis_ball.set_x(1.0f, 0);
+        if (m_collision_effect.getStatus() != sf::Music::Playing)
+            m_collision_effect.play();
+    }
+}
+
+void Pong::Application::shader_logic() {
+//    float currentTime = static_cast<float>(sf::Clock().getElapsedTime().asSeconds());
+//    float deltaTime   = currentTime - m_start_time;
+//    m_shader.setUniform("iTime", currentTime);
+//    m_shader.setUniform("iTimeDelta", deltaTime);
+//    
+//    float channelTimes[4] = {
+//        m_clock.getElapsedTime().asSeconds(),
+//        m_clock.getElapsedTime().asSeconds() * 0.5,
+//        m_clock.getElapsedTime().asSeconds() * 2.0f,
+//        m_clock.getElapsedTime().asSeconds() * 0.75f,
+//    };
+//    m_shader.setUniformArray("iChannelTime", channelTimes, 4);
+//    m_shader.setUniform("iFrame", m_clock.getElapsedTime().asMilliseconds());
+//    sf::Vector3f channelResolutions[4] {
+//        sf::Vector3f(WIDTH, HEIGHT, 1.0f),
+//        sf::Vector3f(WIDTH, HEIGHT, 1.0f),
+//        sf::Vector3f(WIDTH, HEIGHT, 1.0f),
+//        sf::Vector3f(WIDTH, HEIGHT, 1.0f)
+//    };
+//    m_shader.setUniformArray("iChannelResolution", channelResolutions, 4);
+//    sf::Vector2i mousePos = sf::Mouse::getPosition(m_pong);
+//    sf::Vector2i mouseClicksPos = sf::Mouse::isButtonPressed(sf::Mouse::Left) ? sf::Mouse::getPosition(m_pong) : sf::Vector2i(-1, -1);
+//
+//    std::vector<float> iMouseValues = {static_cast<float>(mousePos.x), static_cast<float>(mousePos.y), static_cast<float>(mouseClicksPos.x), static_cast<float>(mouseClicksPos.y)};
+//    m_shader.setUniformArray("iMouse", iMouseValues.data(), iMouseValues.size());
+//
+//    sf::Time current_Time = m_clock.getElapsedTime();
+//    std::vector<float> iDateValues = {current_Time.asSeconds(), current_Time.asMilliseconds(), current_Time.asSeconds() / 60.f, current_Time.asSeconds() / 3600.0f};
+//    m_shader.setUniformArray("iDateValues", iDateValues.data(), iDateValues.size());
 }
 
 void Pong::Application::run() {
@@ -150,12 +211,14 @@ void Pong::Application::run() {
         }
         else m_start_up.stop();
 
+        if (m_background.getStatus() != sf::Music::Playing) m_background.play();
         update_players();
+        update_ball();
         m_pong.clear(sf::Color::Black);
         draw_court();        
         draw_players();
-        draw_player_score();
-        draw_opponent_score();
+        draw_players_score();
+        m_pong.draw(m_tennis_ball.get_ball_object());
         m_pong.display();
     }
 }

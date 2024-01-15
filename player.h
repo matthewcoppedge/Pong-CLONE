@@ -15,6 +15,8 @@ class Player {
        void  set_y(float pos);
        void  set_opponent_x(float pos);
        void  set_opponent_y(float pos);
+       sf::FloatRect get_player_box();
+       sf::FloatRect get_opponent_box();
        sf::RectangleShape& get_player();
        sf::RectangleShape& get_opponent();
 
@@ -25,4 +27,6 @@ class Player {
         float               m_Y;
         sf::RectangleShape  m_player;
         sf::RectangleShape  m_opponent;
+        sf::FloatRect       m_player_bounding_box;
+        sf::FloatRect       m_opponent_bounding_box;
 };

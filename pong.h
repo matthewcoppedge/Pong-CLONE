@@ -4,6 +4,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/System.hpp>
 #include "player.h"
+#include "ball.h"
 
 namespace Pong {
 class Application {
@@ -15,11 +16,13 @@ class Application {
         void draw_court();
         void draw_players();
         void update_players();
-        void draw_player_score();
-        void draw_opponent_score();
+        void draw_players_score();
+        void shader_logic();
+        void update_ball();
 
         int32_t             m_SCORE_LEFT;
         int32_t             m_SCORE_RIGHT;
+        float               m_start_time;
 
         sf::RenderWindow    m_pong;
         sf::Event           m_event;
@@ -31,11 +34,16 @@ class Application {
         sf::Sound           m_collision_effect;
         sf::RectangleShape  m_court_divider;
         sf::Music           m_start_up;
+        sf::Music           m_background;
         sf::Clock           m_clock;
         sf::Time            m_freezeDuration;
         sf::Time            m_freezeTimer;
 
+        sf::Shader          m_shader;
+
         Player              m_left;
         Player              m_right;
+
+        Ball                m_tennis_ball;
 };
 }
