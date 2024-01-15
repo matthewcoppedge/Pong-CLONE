@@ -8,11 +8,13 @@ Player::Player() : m_player(sf::Vector2f(145.0f, 20.0f)), m_opponent(sf::Vector2
     m_y = 375.0f;
     m_player.setPosition(m_x, m_y);
     m_player.rotate(90.0f);
+    m_player.setOrigin( (145.0 / 2.0f), (20.0f / 2.0f));
 
     m_X = WIDTH - 15.0f;
     m_Y = 375.0f;
     m_opponent.setPosition(m_X, m_Y);
     m_opponent.rotate(90.0f);
+    m_opponent.setOrigin( (145.0 / 2.0f), (20.0f / 2.0f));
 }
 
 [[nodiscard]]
@@ -33,6 +35,12 @@ float Player::get_opponent_y() const {
 [[nodiscard]]
 float Player::get_opponent_x() const {
     return m_X;
+}
+sf::Vector2f Player::get_origin_player() const {
+    return m_player.getOrigin();
+}
+sf::Vector2f Player::get_origin_opponent() const {
+    return m_opponent.getOrigin();
 }
 
 void Player::set_y(float pos) {

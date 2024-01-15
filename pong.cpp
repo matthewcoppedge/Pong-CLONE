@@ -1,4 +1,7 @@
 #include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <string>
 #include <vector>
 #include "pong.h"
 
@@ -19,10 +22,8 @@ Pong::Application::Application() : m_pong(sf::VideoMode(WIDTH, HEIGHT), "Pong"),
     if (!m_shader.loadFromFile("distortion.frag", sf::Shader::Fragment)) {
         std::cerr << "Failed to load fragment shader!" << std::endl;
         std::cout << m_shader.getNativeHandle() << std::endl;
-//        exit (-1);
     }
     m_shader.setUniform("iResolution", sf::Vector3f(WIDTH, HEIGHT, 1.0f));
-    m_shader.setUniform("iFrameRate", 120);
     
     //Initalize Title Settings
     m_title.setFont(m_font);
@@ -65,7 +66,7 @@ Pong::Application::Application() : m_pong(sf::VideoMode(WIDTH, HEIGHT), "Pong"),
         std::cerr << "Failed to load background music!" << std::endl;
         exit (-1);
     }
-    m_background.setVolume(8);
+    m_background.setVolume(3);
 
     //Used to set delay for main theme / title screen
     m_freezeTimer = m_freezeDuration;
@@ -142,59 +143,93 @@ void Pong::Application::draw_players() {
 }
 
 void Pong::Application::draw_players_score() {
+    if ((m_tennis_ball.get_x() <= -150)) {
+        m_SCORE_RIGHT++;
+        std::stringstream ss;
+        ss << std::setw(2) << std::setfill('0') << m_SCORE_RIGHT;
+        std::string stringValue = ss.str();
+        m_opponent_score.setString(stringValue);
+    }
+    if ( (m_tennis_ball.get_x() >  WIDTH + 150)) {
+        m_SCORE_LEFT++;
+        std::stringstream ss;
+        ss << std::setw(2) << std::setfill('0') << m_SCORE_LEFT;
+        std::string stringValue = ss.str();
+        m_player_score.setString(stringValue);
+    }
     m_pong.draw(m_player_score);
     m_pong.draw(m_opponent_score);
 }
 
 void Pong::Application::update_ball() {
     
-    if (!m_tennis_ball.get_status()) m_tennis_ball.set_x(1.0f, 0);
-    if (m_tennis_ball.get_status()) m_tennis_ball.set_x(1.0f, 1);
 
     [[unlikely]]
     if (m_tennis_ball.get_ball_bounding_box().intersects(m_left.get_player_box())) {
+        std::cout << m_tennis_ball.get_y() << std::endl;
+        std::cout << m_left.get_y() << std::endl;
         if (m_collision_effect.getStatus() != sf::Music::Playing)
             m_collision_effect.play();
         m_tennis_ball.set_status(false);
+        if (m_tennis_ball.get_y()  < m_left.get_y()) {
+            m_tennis_ball.set_y(false);
+            std::cout << "Here left 1st!" << std::endl;
+        }
+        else {
+            m_tennis_ball.set_y(true);
+            std::cout << "Here left 2nd!" << std::endl;
+        }
     }
 
     else if (m_tennis_ball.get_ball_bounding_box().intersects(m_right.get_opponent_box())) {
+        std::cout << m_tennis_ball.get_y() << std::endl;
+        std::cout << m_right.get_y() << std::endl;
         if (m_collision_effect.getStatus() != sf::Music::Playing)
             m_collision_effect.play();
         m_tennis_ball.set_status(true);
+        if (m_tennis_ball.get_y() < m_right.get_y()) {
+            m_tennis_ball.set_y(false);
+            std::cout << "Here right 1st" << std::endl;
+        }
+        else {
+            m_tennis_ball.set_y(true);
+            std::cout << "Here right 2nt" << std::endl;
+        }
     }
+
+     m_tennis_ball.set_x(5.0f, 0);
 }
 
 void Pong::Application::shader_logic() {
-//    float currentTime = static_cast<float>(sf::Clock().getElapsedTime().asSeconds());
-//    float deltaTime   = currentTime - m_start_time;
-//    m_shader.setUniform("iTime", currentTime);
-//    m_shader.setUniform("iTimeDelta", deltaTime);
-//    
-//    float channelTimes[4] = {
-//        m_clock.getElapsedTime().asSeconds(),
-//        m_clock.getElapsedTime().asSeconds() * 0.5,
-//        m_clock.getElapsedTime().asSeconds() * 2.0f,
-//        m_clock.getElapsedTime().asSeconds() * 0.75f,
-//    };
-//    m_shader.setUniformArray("iChannelTime", channelTimes, 4);
-//    m_shader.setUniform("iFrame", m_clock.getElapsedTime().asMilliseconds());
-//    sf::Vector3f channelResolutions[4] {
-//        sf::Vector3f(WIDTH, HEIGHT, 1.0f),
-//        sf::Vector3f(WIDTH, HEIGHT, 1.0f),
-//        sf::Vector3f(WIDTH, HEIGHT, 1.0f),
-//        sf::Vector3f(WIDTH, HEIGHT, 1.0f)
-//    };
-//    m_shader.setUniformArray("iChannelResolution", channelResolutions, 4);
-//    sf::Vector2i mousePos = sf::Mouse::getPosition(m_pong);
-//    sf::Vector2i mouseClicksPos = sf::Mouse::isButtonPressed(sf::Mouse::Left) ? sf::Mouse::getPosition(m_pong) : sf::Vector2i(-1, -1);
-//
-//    std::vector<float> iMouseValues = {static_cast<float>(mousePos.x), static_cast<float>(mousePos.y), static_cast<float>(mouseClicksPos.x), static_cast<float>(mouseClicksPos.y)};
-//    m_shader.setUniformArray("iMouse", iMouseValues.data(), iMouseValues.size());
-//
-//    sf::Time current_Time = m_clock.getElapsedTime();
-//    std::vector<float> iDateValues = {current_Time.asSeconds(), current_Time.asMilliseconds(), current_Time.asSeconds() / 60.f, current_Time.asSeconds() / 3600.0f};
-//    m_shader.setUniformArray("iDateValues", iDateValues.data(), iDateValues.size());
+    float currentTime = static_cast<float>(sf::Clock().getElapsedTime().asSeconds());
+    float deltaTime   = currentTime - m_start_time;
+    m_shader.setUniform("iTime", currentTime);
+    m_shader.setUniform("iTimeDelta", deltaTime);
+    
+    float channelTimes[4] = {
+        m_clock.getElapsedTime().asSeconds(),
+        m_clock.getElapsedTime().asSeconds() * 0.5,
+        m_clock.getElapsedTime().asSeconds() * 2.0f,
+        m_clock.getElapsedTime().asSeconds() * 0.75f,
+    };
+    m_shader.setUniformArray("iChannelTime", channelTimes, 4);
+    m_shader.setUniform("iFrame", m_clock.getElapsedTime().asMilliseconds());
+    sf::Vector3f channelResolutions[4] {
+        sf::Vector3f(WIDTH, HEIGHT, 1.0f),
+        sf::Vector3f(WIDTH, HEIGHT, 1.0f),
+        sf::Vector3f(WIDTH, HEIGHT, 1.0f),
+        sf::Vector3f(WIDTH, HEIGHT, 1.0f)
+    };
+    m_shader.setUniformArray("iChannelResolution", channelResolutions, 4);
+    sf::Vector2i mousePos = sf::Mouse::getPosition(m_pong);
+    sf::Vector2i mouseClicksPos = sf::Mouse::isButtonPressed(sf::Mouse::Left) ? sf::Mouse::getPosition(m_pong) : sf::Vector2i(-1, -1);
+
+    std::vector<float> iMouseValues = {static_cast<float>(mousePos.x), static_cast<float>(mousePos.y), static_cast<float>(mouseClicksPos.x), static_cast<float>(mouseClicksPos.y)};
+    m_shader.setUniformArray("iMouse", iMouseValues.data(), iMouseValues.size());
+
+    sf::Time current_Time = m_clock.getElapsedTime();
+    std::vector<float> iDateValues = {current_Time.asSeconds(), current_Time.asMilliseconds(), current_Time.asSeconds() / 60.f, current_Time.asSeconds() / 3600.0f};
+    m_shader.setUniformArray("iDateValues", iDateValues.data(), iDateValues.size());
 }
 
 void Pong::Application::run() {

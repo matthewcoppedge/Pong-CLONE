@@ -11,6 +11,8 @@ class Player {
        float get_y()          const;
        float get_opponent_y() const;
        float get_opponent_x() const;
+       sf::Vector2f get_origin_player() const; 
+       sf::Vector2f get_origin_opponent() const; 
        void  set_x(float pos);
        void  set_y(float pos);
        void  set_opponent_x(float pos);

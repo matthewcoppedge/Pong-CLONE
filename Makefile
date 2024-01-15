@@ -11,7 +11,7 @@ main.o: main.cpp pong.h
 pong.o: pong.cpp pong.h
 	$(CXX) -c pong.cpp $(CFLAGS) 
 
-ball.o: ball.cpp ball.h
+ball.o: ball.cpp ball.h player.h
 	$(CXX) -c ball.cpp $(CFLAGS)
 
 player.o: player.cpp player.h
