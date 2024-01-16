@@ -248,7 +248,7 @@ void Pong::Application::game_over() {
         winner.setFont(m_font);
         winner.setString("WINNER");
         winner.setCharacterSize(40);
-        winner.setPosition( (WIDTH / 4.0f), (HEIGHT / 2.0f));
+        winner.setPosition( (WIDTH / 6.0f), (HEIGHT / 2.0f));
         while (end_game > sf::Time::Zero) {
             end_game -= game_end.restart();
             m_pong.clear(); 
