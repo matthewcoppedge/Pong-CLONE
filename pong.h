@@ -19,10 +19,12 @@ class Application {
         void draw_players_score();
         void shader_logic();
         void update_ball();
+        void game_over();
 
         int32_t             m_SCORE_LEFT;
         int32_t             m_SCORE_RIGHT;
         float               m_start_time;
+        bool                m_game_over;
 
         sf::RenderWindow    m_pong;
         sf::Event           m_event;
